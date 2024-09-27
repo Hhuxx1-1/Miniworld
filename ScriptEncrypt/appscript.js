@@ -13,7 +13,7 @@ function submitForm() {
         redirect: "follow",
         method: 'POST', // Sending a POST request
         headers: {
-            'Content-Type': 'application/json', // Specify content type as JSON
+            'Content-Type': 'text/plain,charset=utf-8', // Specify content type as JSON
         },
         body: JSON.stringify(data), // Convert data to JSON string
     })
