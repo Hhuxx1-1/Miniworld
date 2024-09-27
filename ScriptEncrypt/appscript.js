@@ -21,7 +21,7 @@ function submitForm() {
     .then(response => response.json()) // Handle the response
     .then(data => {
         console.log('Success:', data); // Log the response from the server
-        document.getElementById("output").innerHTML = "<pre>" + data.encscript + "</pre>"
+        document.getElementById("output").innerHTML = '<pre id="CopyThis">' + data.encscript + '</pre>'
     })
     .catch((error) => {
         console.error('Error:', error); // Log any error
