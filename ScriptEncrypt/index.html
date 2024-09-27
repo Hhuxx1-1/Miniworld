@@ -10,8 +10,17 @@
     <p>Tired of Peoples Peeking at Your Script?</p>
   <!-- Form starts here -->
   <form id="form-data">
-    <textarea name="script" id="script" placeholder="Your Script Goes Here"></textarea>
-    <input type="button" value="Submit" onclick="submitForm()">
+    <div>
+        <label for="script">Password</label>
+        <input id="KEY" type="password"  name="KEY" placeholder="Enter Your Password">
+    </div>
+    <div>
+        <label for="script">Enter Your Script:</label>
+        <textarea name="script" id="script" placeholder="Your Script Goes Here"></textarea>
+    </div>
+    <div>
+        <input type="button" value="Submit" onclick="submitForm()">
+    </div>
   </form>
 
   <!-- Placeholder for displaying form data -->

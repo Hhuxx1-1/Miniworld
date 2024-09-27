@@ -2,9 +2,10 @@
 function submitForm() {
     // Access the form data using document.getElementById
     const scriptData = document.getElementById('script').value;
-
+    const myKey = document.getElementById('KEY').value;
     // Prepare the data to be sent
     const data = {
+        key :  myKey,
         script: scriptData
     };
 
