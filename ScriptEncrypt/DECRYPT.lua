@@ -60,7 +60,6 @@ function DECRYPT.load_script(encrypted_base64_script, key)
             print("Error in execution Load : ", err)
         end
     else 
-        print(decrypted_script);
         local func, err = LoadLuaScript(decrypted_script)
 
         if func then
