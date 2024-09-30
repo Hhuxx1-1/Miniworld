@@ -4,73 +4,12 @@ MYWORLD.DAY = 0;
 MYWORLD.BUFF_TORCH = 50000000;
 MYWORLD.LIGHT_RENDER_LEN = 4 ; 
 MYWORLD.IsStarted=false;
-local function SpeedUpTimeWorld(speed) 
-    local code  = World:SetTimeVanishingSpeed(speed);
-end 
 MYWORLD.Increment = 1;
-
-MYWORLD.CUR_ACTION = {} ;
-
-MYWORLD.SET_DAY = function(WorldTime)
-    if(WorldTime==nil)then 
-        World:setHours(1);
-    end 
-    World:SetTimeVanishingSpeed(60);
-    MYWORLD.CUR_ACTION = "SET_DAY";
-end
-
-MYWORLD.SET_NIGHT = function(WorldTime)
-    if(WorldTime == nil)then 
-        World:setHours(10);
-    end 
-    World:SetTimeVanishingSpeed(120);
-    MYWORLD.CUR_ACTION = "SET_NIGHT";
-end
-
-MYWORLD.SET_PAUSE = function()
-    MYWORLD.CUR_ACTION = "SET_READY";
-    World:SetTimeVanishingSpeed(0);
-end
-
-MYWORLD.Duration_Of_Day = 400; --[[ 6.6 Minutes]]
-
-MYWORLD.Get_Seconds_Today = function()
-    return math.fmod(MYWORLD.Second,MYWORLD.Duration_Of_Day);
-end
 
 MYWORLD.GET_LIGHT_BY_POS = function(x,y,z)
     local r , light = World:getLightByPos(x,y,z);
     if r == 0 then return light end ;
 end
-
-MYWORLD.TIME_TO_SET_DAY = 280 ;
-MYWORLD.TIME_TO_SET_NIGHT = 2 ;
-
-MYWORLD.Check_Event = function(seconds_today)
-
-    if (seconds_today == MYWORLD.TIME_TO_SET_DAY) then
-        MYWORLD.SET_DAY();
-        --Chat:sendSystemMsg("Day Setting Day")
-    end 
-    
-    if (seconds_today == MYWORLD.TIME_TO_SET_DAY+9) then
-        MYWORLD.SET_PAUSE();
-        --Chat:sendSystemMsg("Day Paused")
-    end 
-
-    if (seconds_today == MYWORLD.TIME_TO_SET_NIGHT) then
-        MYWORLD.SET_NIGHT();
-        --Chat:sendSystemMsg("Day Setting Night")
-    end
-
-    if (seconds_today == MYWORLD.TIME_TO_SET_NIGHT+6) then
-        MYWORLD.SET_PAUSE();
-        --Chat:sendSystemMsg("Day Paused")
-        World:setHours(0);
-    end
-    
-end
-
 MYWORLD.GET_ALL_PLAYER = function()
     local result,num,array=World:getAllPlayers(-1)
     if result == 0 then return num,array end 
@@ -81,11 +20,8 @@ MYWORLD.CHECK_PLAYER_TORC = function (playerid)
     if(r==0)then         --[[Chat:sendSystemMsg("Player is Light On "..r)]]    return true else return false    end 
 end
 
-MYWORLD.LIGHT_CONTAINER = {};
-
-MYWORLD.LIGHT_CONTAINER_INIT = function(playerid)
-    MYWORLD.LIGHT_CONTAINER[playerid] = {};
-end
+MYWORLD.LIGHT_CONTAINER = {}; MYWORLD.LIGHT_CONTAINER_INIT = function(playerid)
+    MYWORLD.LIGHT_CONTAINER[playerid] = {}; end
 
 MYWORLD.REGISTER_LIGHT = function(playerid,table,i)
     if(MYWORLD.LIGHT_CONTAINER[playerid]==nil)then MYWORLD.LIGHT_CONTAINER_INIT(playerid) end 
@@ -184,17 +120,7 @@ ScriptSupportEvent:registerEvent("Game.RunTime",function(e)
         end 
         end 
     end 
-    
-    if e.second ~=nil then 
-        if(MYWORLD.IsStarted)then 
-        MYWORLD.Second = MYWORLD.Second + MYWORLD.Increment;
-        -- Chat:sendSystemMsg("World Timelapse : "..MYWORLD.Second);
-        local result,time=World:getHours()
-        --Chat:sendSystemMsg("Time Today : "..MYWORLD.Get_Seconds_Today().." Hours  : "..time);
-        MYWORLD.Check_Event(MYWORLD.Get_Seconds_Today());
-        end 
-    end 
-   
+
     MYWORLD.DO_RENDER_LIGHT();
 
 end)
