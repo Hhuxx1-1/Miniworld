@@ -32,40 +32,57 @@
     <button id="downloadBtn">Download Lua File</button>
 
     <script>
-        // Fetch and display the Lua file content
-        fetch('WorldTimer.lua')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+        // Function to fetch the Lua file using XMLHttpRequest for older browser compatibility
+        function fetchLuaFile() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'WorldTimer.lua', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var luaContent = xhr.responseText;
+                    document.getElementById('luaContent').textContent = luaContent;
+                    
+                    // Attach the download functionality
+                    setupDownload(luaContent);
+                } else if (xhr.readyState == 4 && xhr.status != 200) {
+                    document.getElementById('luaContent').textContent = 'Error loading file: ' + xhr.statusText;
                 }
-                return response.text();
-            })
-            .then(data => {
-                // Display the Lua file content in the <pre> element
-                document.getElementById('luaContent').textContent = data;
+            };
+            xhr.send();
+        }
 
-                // Prepare the file for download when the button is clicked
-                const downloadBtn = document.getElementById('downloadBtn');
-                downloadBtn.addEventListener('click', () => {
-                    // Create a blob for the file content
-                    const blob = new Blob([data], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
+        // Function to set up download for modern and older browsers
+        function setupDownload(luaContent) {
+            var downloadBtn = document.getElementById('downloadBtn');
 
-                    // Create an anchor element to trigger the download
-                    const a = document.createElement('a');
+            downloadBtn.addEventListener('click', function () {
+                if (window.Blob && window.URL) {
+                    // Modern browser with Blob support
+                    var blob = new Blob([luaContent], { type: 'text/plain' });
+                    var url = URL.createObjectURL(blob);
+
+                    var a = document.createElement('a');
                     a.href = url;
-                    a.download = 'WorldTimer.lua'; // File name for the download
+                    a.download = 'WorldTimer.lua'; // File name for download
                     document.body.appendChild(a);
                     a.click();
-
-                    // Clean up by removing the anchor and revoking the URL
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                });
-            })
-            .catch(error => {
-                document.getElementById('luaContent').textContent = 'Error loading file: ' + error;
+                } else {
+                    // Fallback for older browsers without Blob support
+                    var iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                    var doc = iframe.contentDocument || iframe.contentWindow.document;
+                    doc.open();
+                    doc.write('<pre>' + luaContent + '</pre>');  // Show the Lua content as preformatted text
+                    doc.close();
+                    alert('Your browser does not support direct file downloads. Please copy the Lua content manually.');
+                }
             });
+        }
+
+        // Fetch the Lua file when the page loads
+        fetchLuaFile();
     </script>
 </body>
 </html>
