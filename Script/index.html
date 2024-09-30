@@ -12,14 +12,27 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <h1>Lua Script Content</h1>
     <pre id="luaContent">Loading...</pre>
+    <button id="downloadBtn">Download Lua File</button>
 
     <script>
-        // Function to fetch and display the Lua file content
+        // Fetch and display the Lua file content
         fetch('WorldTimer.lua')
             .then(response => {
                 if (!response.ok) {
@@ -28,7 +41,27 @@
                 return response.text();
             })
             .then(data => {
+                // Display the Lua file content in the <pre> element
                 document.getElementById('luaContent').textContent = data;
+
+                // Prepare the file for download when the button is clicked
+                const downloadBtn = document.getElementById('downloadBtn');
+                downloadBtn.addEventListener('click', () => {
+                    // Create a blob for the file content
+                    const blob = new Blob([data], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+
+                    // Create an anchor element to trigger the download
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'WorldTimer.lua'; // File name for the download
+                    document.body.appendChild(a);
+                    a.click();
+
+                    // Clean up by removing the anchor and revoking the URL
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
             })
             .catch(error => {
                 document.getElementById('luaContent').textContent = 'Error loading file: ' + error;
